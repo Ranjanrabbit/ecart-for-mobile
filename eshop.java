@@ -30,15 +30,29 @@ class Mobile
 		setModel(md);
 		setQuantity(qty);
 	}
+	public String getBrand()
+	{
+		return brand;
+	}
 	public void setPrice(float p){
 		price=p;
 	}
+	public double getPrice()
+	{
+		return price;
+	}
+	
 	public void setModel(int m){
 		model=m;
+	}
+	public int getModel()
+	{
+		return model;
 	}
 	public void setQuantity(int q){
 		quantity+=q;
 	}
+	
 	public void setDescription(String d)
 	{
 		description = d;
@@ -104,31 +118,6 @@ class FeaturedMobile extends Mobile
 	public void setDualSim(String ch)
 	{
 		sim_dual = ch;
-	}
-	public FeaturedMobile addMobile()
-	{
-		Scanner in = new Scanner (System.in);
-		System.out.println("Enter brand: ");
-		String st= in.next();
-		System.out.println("Enter model : ");
-		int md= in.nextInt();
-		System.out.println("Enter rate :");
-		float f=in.nextFloat();
-		System.out.println("Enter Quantity: ");
-		/*System.out.println("Enter Description: ");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String des=br.readLine();*/
-		int qty=in.nextInt();
-		System.out.println("Enter the display size :");
-		float ds = in.nextFloat();
-		System.out.println("Enter the weight :");
-		int w=in.nextInt();
-		System.out.println("Enter battery :");
-		int b=in.nextInt();
-		System.out.println("Enter Dual sim (Yes/No):");
-		String d =in.next();
-		FeaturedMobile tmp1 = new FeaturedMobile(st,md,qty,f,ds,b,w,d);
-		return tmp1;
 	}
 	public void displayMobile()
 	{
@@ -223,53 +212,8 @@ class SmartMobile extends FeaturedMobile
 		fcam = f;
 		rcam = r;
 	}
-	public SmartMobile addMobile()
-	{
-		System.out.println("Enter brand            : ");
-		String st= in.next();
-		System.out.println("Enter model            : ");
-		int md= in.nextInt();
-		System.out.println("Enter rate             :");
-		float f=in.nextFloat();
-		System.out.println("Enter Quantity         : ");
-		/*System.out.println("Enter Description: ");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String des=br.readLine();*/
-		int qty=in.nextInt();
-		System.out.println("Enter the display size :");
-		float ds = in.nextFloat();
-		System.out.println("Enter the weight       :");
-		int w=in.nextInt();
-		System.out.println("Enter battery          :");
-		int b=in.nextInt();
-		System.out.println("Enter Dual sim (Yes/No):");
-		String d =in.next();
-		System.out.println("Enter Ram size         :");
-		int ram=in.nextInt();
-		
-		System.out.println("Enter the OS           :");
-		String o=in.next();
-		System.out.println("Enter the Version of OS:");
-		String v=in.next();
-		System.out.println("Enter Kernel build no  :");
-		String k=in.next();
-		
-		/*System.out.println("Enter OS :");
-		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		//String os=br.readLine();*/
-		
-		System.out.println("Enter internal memory  :");
-		int im=in.nextInt();
-		System.out.println("Enter external Memory  :");
-		int em=in.nextInt();
-		System.out.println("Enter rear camera      :");
-		float rc=in.nextFloat();
-		System.out.println("Enter front camera     :");
-		float fc=in.nextFloat();
-		SmartMobile tmp = new SmartMobile(st,md,qty,f,ds,b,w,d,o,v,k,ram,im,em,rc,fc);
-		return tmp
-	}
 	public void displayMobile()
+	
 	{
 		super.displayMobile();
 		OS.osDisplay();
@@ -284,33 +228,223 @@ class SmartMobile extends FeaturedMobile
 	
 }
 
+class Cart
+{
+	private String productName;
+	private float price,subTotal;
+	private int quantity;
+	private static float total=0;
+	
+	Cart()
+	{
+		productName = " ";
+		price = 0;
+		quantity =0;
+	}
+	public void addToCart(Mobile id,int qty)
+	{
+		productName = id.getBrand()+id.getModel();
+		price = (float) id.getPrice();
+		quantity = qty;
+		subTotal = quantity * price;
+		total +=subTotal;
+		displayCartItem();
+		
+	}
+	public float getTotal()
+	{
+		return total;
+	}
+	public Cart removeFromCart()
+	{
+		total -= price*quantity;
+		return null;
+		
+	}
+	public void displayCartItem()
+	{
+		System.out.printf("%2d   %7s     %4d     %8.2f   %d\n",this.productName,this.price,this.quantity,this.subTotal);
+	}
+}
+interface User  
+{
+	public void logIn();
+		
+}
+class Member implements User
+{
+	protected int id,ph_no;
+	protected String name,email,password;
+	final Cart[] cart = new Cart[5];
+	
+	
+	public void logIn()
+	{
+		Scanner in = new Scanner(System.in);
+		System.out.println("\n enter the NAME     :");
+		name = in.next();
+		System.out.println("\n enter the E-mail ID:");
+		email = in.next();
+		System.out.println("\n enter the PASSWARD :");
+		password = in.next();
+		System.out.println("\n LOGGED IN AS   "+name);	
+	}
+	
+}
+class Register extends Member 
+{
+	public void signUp()
+	{
+		Scanner in = new Scanner(System.in);
+		System.out.println("\n enter the NAME     :");
+		name = in.next();
+		System.out.println("\n enter the E-mail ID:");
+		email = in.next();
+		System.out.println("\n enter the PASSWARD :");
+		password = in.next();
+		System.out.println("\n enter the PASSWARD again :");
+		password = in.next();
+	}
+	
+	
+}
+class Guest implements User
+{
+	private int ph_no;
+	private String name,email;
+	Cart[] cart = new Cart[5];
+	public void logIn()
+	{
+		Scanner in = new Scanner(System.in);
+		System.out.println("\n enter the NAME     :");
+		name = in.next();
+		System.out.println("\n enter the E-mail ID:");
+		email = in.next();
+		System.out.println("\n LOGGED IN AS guest");	
+	}
+}
 class eshop
 {
-	public static void main(String[] args) throws Exception
+	public static void main(String[] args) throws IOException
 	{
-		int i,j;
+		int i,j,fn=0,sn=0;
+		SmartMobile[] smobile = null ;
+		FeaturedMobile[] fmobile  = null ;
 		Scanner in = new Scanner (System.in);
-		System.out.println("\n the the number of featured Mobiles");
-		int fn = in.nextInt();
-		System.out.println("\n the the number of SmartMobiles");
-		int sn = in.nextInt();
-		SmartMobile[] smobile = new SmartMobile[sn];
-		FeaturedMobile[] fmobile = new FeaturedMobile[fn];
-		for(i=0;i<sn;i++)
+		do{
+		System.out.println("\n1->Seller\n2->Customer\n3->exit\n\n enter your choice:");
+		int ch = in.nextInt();
+		switch(ch)
 		{
-			System.out.println("Enter the details of Smart mobile "+(i+1)+" :");
-			SmartMobile temp = new SmartMobile();
-			
-			smobile[i] = temp.addMobile();
-			
-		}
-		for(j=0;j<fn;j++)
-		{
-			System.out.println("Enter the details of Featured mobile "+(j+1)+" :");
-			FeaturedMobile temp = new FeaturedMobile();
-			fmobile[j] = temp.addMobile();
-			
-		}
+			case 1: System.out.println("\n the the number of featured Mobiles");
+					 fn = in.nextInt();
+					System.out.println("\n the the number of SmartMobiles");
+					 sn = in.nextInt();
+					smobile = new SmartMobile[sn];
+					fmobile = new FeaturedMobile[fn];
+					for(i=0;i<sn;i++)
+					{
+						System.out.println("Enter the details of Smart mobile "+(i+1)+" :");
+						System.out.println("Enter brand: ");
+						String st= in.next();
+						System.out.println("Enter model : ");
+						int md= in.nextInt();
+						System.out.println("Enter rate :");
+						float f=in.nextFloat();
+						System.out.println("Enter Quantity: ");
+						/*System.out.println("Enter Description: ");
+						BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						String des=br.readLine();*/
+						int qty=in.nextInt();
+						System.out.println("Enter the display size :");
+						float ds = in.nextFloat();
+						System.out.println("Enter the weight :");
+						int w=in.nextInt();
+						System.out.println("Enter battery :");
+						int b=in.nextInt();
+						System.out.println("Enter Dual sim (Yes/No):");
+						String d =in.next();
+						System.out.println("Enter Ram size :");
+						int ram=in.nextInt();
+						
+						System.out.println("Enter the OS :");
+						String o=in.next();
+						System.out.println("Enter the Version of OS :");
+						String v=in.next();
+						System.out.println("Enter Kernel build no :");
+						String k=in.next();
+						
+						/*obj.setos(os);
+						obj.setversion(ver);
+						obj.setkernel(os);
+						obj.dispos();
+						
+						//System.out.println("Enter OS :");
+						//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						//String os=br.readLine();*/
+						
+						System.out.println("Enter internal memory :");
+						int im=in.nextInt();
+						System.out.println("Enter external Memory :");
+						int em=in.nextInt();
+						System.out.println("Enter rear camera :");
+						float rc=in.nextFloat();
+						System.out.println("Enter front camera :");
+						float fc=in.nextFloat();
+						SmartMobile tmp = new SmartMobile(st,md,qty,f,ds,b,w,d,o,v,k,ram,im,em,rc,fc);
+						smobile[i]=tmp;
+						
+					}
+					for(j=0;j<fn;j++)
+					{
+						System.out.println("Enter the details of Featured mobile "+(j+1)+" :");
+						System.out.println("Enter brand: ");
+						String st= in.next();
+						System.out.println("Enter model : ");
+						int md= in.nextInt();
+						System.out.println("Enter rate :");
+						float f=in.nextFloat();
+						System.out.println("Enter Quantity: ");
+						/*System.out.println("Enter Description: ");
+						BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+						String des=br.readLine();*/
+						int qty=in.nextInt();
+						System.out.println("Enter the display size :");
+						float ds = in.nextFloat();
+						System.out.println("Enter the weight :");
+						int w=in.nextInt();
+						System.out.println("Enter battery :");
+						int b=in.nextInt();
+						System.out.println("Enter Dual sim (Yes/No):");
+						String d =in.next();
+						FeaturedMobile tmp1 = new FeaturedMobile(st,md,qty,f,ds,b,w,d);
+						fmobile[j]=tmp1;
+						
+					}
+					break;
+			case 2:     login:
+						System.out.println("Log in as....\n1->member\n2->guest\n\nTo be a member ....\n3->register");
+					  ch=in.nextInt();
+					  switch(ch)
+					  {
+						  case 1: Member m = new Member();
+								  m.logIn();
+								  break;
+						  case 2: Guest g = new Guest();
+								  g.logIn();
+								  break;
+						  case 3: Register r = new Register();
+								  r.signUp();
+								  break; 
+						  default: System.out.println("illegal user");
+								   System.exit(0);
+					  }
+					  break;
+			case 3:
+		    default : System.exit(0);
+		}				
+		
+		
 		
 		System.out.println("ID     Brand     Model    Price      Quantity");
 		System.out.println("Featured mobiles :");
@@ -334,12 +468,15 @@ class eshop
 		{
 			fmobile[i-sn].displayMobile();
 		}
-		j=0;
+		}
+		while(true);
+		
+		/*j=0;
 		for(i=0;i<sn||j<fn;i++,j++)
 		{
 			smobile[i].finalize(i);
 			fmobile[j].finalize(j);
 		}
-		System.gc();
+		System.gc();*/
 	}
 }
