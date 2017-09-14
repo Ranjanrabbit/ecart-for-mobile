@@ -270,6 +270,29 @@ class Cart
 		System.out.println((i+1)+"        " +productName+"          "+price+"  *  "+quantity+"  =  "+subTotal);
 	}
 }
+class Address
+{
+	private String door_no,st_name,locality,city,pincode;
+	
+	public void setAddress()
+	{
+		Scanner in = new Scanner(System.in);
+		System.out.println("enter the door number:");
+		door_no = in.next();
+		System.out.println("enter the street name:");
+		st_name = in.next();
+		System.out.println("enter the locality:");
+		locality = in.next();
+		System.out.println("enter the city:");
+		city = in.next();
+		System.out.println("enter the pincode:");
+		pincode = in.next();
+	}
+	public void getAddress()
+	{
+		System.out.println(""+door_no+","+st_name+","+locality+","+city+","+pincode);
+	}
+}
 interface User  
 {
 	public void logIn();
@@ -284,6 +307,7 @@ class Member implements User
 	private static int numcart = 0,id=0;
 	protected int ph_no;
 	protected String name,password2,email,password;
+	private Address address = new Address();
 	List<Cart> cart = new ArrayList<Cart>();
 	
 	 
@@ -303,8 +327,8 @@ class Member implements User
 			System.out.println("\n enter the PASSWARD again :");
 			password2 = in.next();
 		}while(password.compareTo(password2)!=0);
-		System.out.println("\n enter the Mobile number:");
-		/*ph_no  = in.nextInt();*/
+		System.out.println("\n enter the Mobile address:");
+		address.setAddress();
 		
 		
 	}
@@ -361,6 +385,7 @@ class Guest implements User
 {
 	private int ph_no;
 	private String name,email;
+	private Address address = new Address();
 	List<Cart> cart = new ArrayList<Cart>();
 	public void logIn()
 	{
@@ -370,8 +395,8 @@ class Guest implements User
 		System.out.println("\n enter the E-mail ID:");
 		email = in.next();
 		
-		System.out.println("\n enter the Mobile number:");
-		/*ph_no = in.nextInt();	*/
+		System.out.println("\n enter the Address:");
+		address.setAddress();
 		System.out.println("\n LOGGED IN AS guest");
 	}
 	public void addCartItem(SmartMobile m,int q)
