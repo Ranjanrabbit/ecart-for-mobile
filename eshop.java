@@ -258,7 +258,7 @@ class Address
 }
 interface User  
 {
-	public void logIn();
+	public boolean logIn(List<Member> member);
 	public void addCartItem(SmartMobile m,int q);
 	public void addCartItem(FeaturedMobile m,int q);
 	public void removeCartItem(int id);
@@ -293,7 +293,7 @@ class Member implements User
 		System.out.println("\n enter the  address:");
 		address.setAddress();
 	}
-	public void logIn()
+	public boolean logIn(List<Member> member)
 	{
 		Scanner in = new Scanner(System.in);
 		System.out.println("\n enter the NAME     :");
@@ -302,7 +302,19 @@ class Member implements User
 		email = in.next();
 		System.out.println("\n enter the PASSWARD :");
 		password = in.next();
-		System.out.println("\n LOGGED IN AS   "+name);	
+		for(Member m:member)
+		{
+			if(m.email.compareTo(email)==0)
+			{
+				if(m.password.compareTo(password)==0)
+				{
+					System.out.println("\n LOGGED IN AS   "+name);
+					return true;
+				}
+			}
+		}
+		System.out.println("error in logging in");
+		return false;	
 	}
 	public void addCartItem(SmartMobile m,int q)
 	{
@@ -346,17 +358,17 @@ class Guest implements User
 	private String name,email;
 	private Address address = new Address();
 	List<Cart> cart = new ArrayList<Cart>();
-	public void logIn()
+	public boolean logIn(List<Member> member)
 	{
 		Scanner in = new Scanner(System.in);
 		System.out.println("\n enter the NAME     :");
 		name = in.next();
 		System.out.println("\n enter the E-mail ID:");
 		email = in.next();
-		
 		System.out.println("\n enter the Address:");
 		address.setAddress();
 		System.out.println("\n LOGGED IN AS guest");
+		return true;
 	}
 	public void addCartItem(SmartMobile m,int q)
 	{
@@ -405,7 +417,7 @@ class eshop
 			int ch = in.nextInt();
 			switch(ch)
 			{
-				case 1: System.out.println("\n1->add mobile to stack\n2->list the member");
+				case 1: System.out.println("\n1->add mobile to stock\n2->list the member");
 						ch = in.nextInt();
 						switch(ch)
 						{
@@ -496,48 +508,49 @@ class eshop
 						switch(ch)
 						{
 							case 1: Member m = new Member();
-									m.logIn();
-									System.out.println("ID     Brand     Model    Price      Quantity");
-									System.out.println("Featured mobiles :");
-									
-									for(FeaturedMobile f:fmobile)
+									if(m.logIn(member))
 									{
-										f.printDetails();
+										System.out.println("ID     Brand     Model    Price      Quantity");
+										System.out.println("Featured mobiles :");
+										
+										for(FeaturedMobile f:fmobile)
+										{
+											f.printDetails();
+										}
+										System.out.println("Smart mobiles  :");
+										for(SmartMobile s:smobile)
+										{
+											s.printDetails();
+										}
+										System.out.println("enter the ID to see details:");
+										i = in.nextInt();
+										if (i<smobile.size()){
+											smobile.get(i).displayMobile();
+										}
+										else
+										{
+											fmobile.get(i-smobile.size()).displayMobile();
+										}
+										/*System.out.println("\nEnter  \n 1->Browse another mobile \n 2-> add a mobile to cart\n choice :")
+										ch= in.nextInt();
+										switch(ch)
+										{1
+										}	*/
+										System.out.println("enter the ID to add to cart:");
+										i = in.nextInt();
+										System.out.println("enter the quantity:");
+										int q = in.nextInt();
+										if (i<smobile.size()){
+											m.addCartItem(smobile.get(i), q);
+										}
+										else
+										{
+											m.addCartItem(fmobile.get(i-sn),q);
+										}
 									}
-									System.out.println("Smart mobiles  :");
-									for(SmartMobile s:smobile)
-									{
-										s.printDetails();
-									}
-									System.out.println("enter the ID to see details:");
-									i = in.nextInt();
-									if (i<smobile.size()){
-										smobile.get(i).displayMobile();
-									}
-									else
-									{
-										fmobile.get(i-smobile.size()).displayMobile();
-									}
-									/*System.out.println("\nEnter  \n 1->Browse another mobile \n 2-> add a mobile to cart\n choice :")
-									ch= in.nextInt();
-									switch(ch)
-									{1
-									}	*/
-									System.out.println("enter the ID to add to cart:");
-									i = in.nextInt();
-									System.out.println("enter the quantity:");
-									int q = in.nextInt();
-									if (i<smobile.size()){
-										m.addCartItem(smobile.get(i), q);
-									}
-									else
-									{
-										m.addCartItem(fmobile.get(i-sn),q);
-									}
-								  
 									break;
 							case 2: Guest g = new Guest();
-									g.logIn();
+									boolean k=g.logIn(member);
 									guest.add(g);
 									System.out.println("ID     Brand     Model    Price      Quantity");
 									System.out.println("Featured mobiles :");
@@ -568,7 +581,7 @@ class eshop
 									System.out.println("enter the ID to add to cart:");
 									i = in.nextInt();
 									System.out.println("enter the quantity:");
-									q = in.nextInt();
+									int q = in.nextInt();
 									
 									if (i<smobile.size()){
 										g.addCartItem(smobile.get(i), q);
