@@ -1,0 +1,227 @@
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.util.*;
+import java.io.*;
+class Seller
+{
+	private static String name= "admin",pass="admin";
+	Seller()
+	{
+		JFrame sellerLogIn = new JFrame();
+		sellerLogIn.setTitle("Seller Log In ");
+		sellerLogIn.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		sellerLogIn.setSize(400,300);
+		sellerLogIn.setLayout(null);
+		JLabel adminname = new JLabel("Admin Name");
+		JLabel password = new JLabel("Password");
+		JTextField  jname = new JTextField();
+		JPasswordField  jpass = new JPasswordField();
+		JButton signin = new JButton("Sign In");
+		JButton clear = new JButton("Clear Fields");
+		adminname.setBounds(20,30,80,30);
+		password.setBounds(20,80,80,30);
+		jname.setBounds(120,30,200,30);
+		jpass.setBounds(120,80,200,30);
+		signin.setBounds(120,150,80,30);
+		clear.setBounds(220,150,100,30);
+		JLabel success = new JLabel("Successfully Logged In");
+		JButton next = new JButton("Next");
+		success.setBounds(20,200,150,30);
+		next.setBounds(220,200,60,30);
+		sellerLogIn.add(adminname);
+		sellerLogIn.add(password);
+		sellerLogIn.add(jname);
+		sellerLogIn.add(jpass);
+		sellerLogIn.add(signin);
+		sellerLogIn.add(clear);
+		sellerLogIn.add(success);
+		sellerLogIn.add(next);
+		success.setVisible(false);
+		next.setVisible(false);
+		sellerLogIn.setVisible(true);
+		clear.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e3)
+			{
+				jname.setText("");
+				jpass.setText("");
+				success.setVisible(false);
+				next.setVisible(false);
+			}
+		});
+		signin.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e){
+				boolean log = logInFun(jname.getText(),jpass.getPassword().toString().trim());
+				try{
+					if(log)
+					{
+						success.setText("Successfully Logged In");
+						success.setVisible(true);
+						next.setVisible(true);
+						adminname.setVisible(false);
+						password.setVisible(false);
+						jname.setVisible(false);
+						jpass.setVisible(false);
+						signin.setVisible(false);
+						clear.setVisible(false);
+						next.addActionListener(new ActionListener()
+						{
+							public void actionPerformed(ActionEvent e)
+							{
+								sellerLogIn.dispose();
+								sellerPage();
+							}
+						});
+						
+					}
+					else
+					{
+						success.setText("failed to log in RETRY");
+						success.setVisible(true);
+						next.setVisible(false);
+					}
+				}
+				catch (Exception ex)
+				 {
+				 System.out.println(ex);
+				 }
+			}
+		});
+	}
+	public boolean logInFun(String x,String y)
+	{
+		return (x.equals("admin"));
+	}
+	public void sellerPage()
+	{
+		
+	}
+}
+
+class eshop extends JFrame 
+
+{
+	public static void main(String[] args)
+	{  
+		JFrame welcome = new JFrame();				  
+		JButton sellerButton = new JButton("Seller");  
+		JButton customerButton = new JButton("Customer");
+		sellerButton.setBounds(10,20,80,30);  
+		customerButton.setBounds(100,20,100,30);
+		welcome.add(sellerButton);
+		welcome.add(customerButton);	  
+		welcome.setSize(230,100); 
+		welcome.setLayout(null);
+		welcome.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		welcome.setTitle("welcome");
+		welcome.setVisible(true); 
+		sellerButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				welcome.dispose();
+				Seller seller = new Seller();
+				
+			}
+		});
+		customerButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e)
+			{
+				welcome.dispose();
+				JFrame customer = new JFrame();
+				customer.setTitle("Customer Page ");
+				customer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				customer.setSize(400,300);
+				customer.setLayout(null);
+				JMenuBar bar = new JMenuBar();
+				JMenu product = new JMenu("Products");
+				JMenu login = new JMenu("log Ln");
+				JMenuItem featured = new JMenuItem("Featured Mobile");
+				JMenuItem smart = new JMenuItem("Smart Mobile");
+				JMenuItem member = new JMenuItem("Member ");
+				JMenuItem guest = new JMenuItem("Guest");
+				product.add(smart);
+				product.add(featured);
+				login.add(member);
+				login.add(guest);
+				bar.add(product);
+				bar.add(login);
+				customer.setJMenuBar(bar);
+				customer.setVisible(true);
+				
+				member.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e1)
+					{
+						JFrame logIn = new JFrame();
+						logIn.setTitle("Member Log In ");
+						logIn.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						logIn.setSize(400,300);
+						logIn.setLayout(null);
+						JLabel email = new JLabel("E-mail Id:");
+						JLabel password = new JLabel("Password");
+						JTextField  emailId = new JTextField();
+						JPasswordField  pass = new JPasswordField();
+						JButton signup = new JButton("Sign Up");
+						JButton signin = new JButton("Sign In");
+						JButton clear = new JButton("Clear Fields");
+						email.setBounds(20,30,80,30);
+						password.setBounds(20,80,80,30);
+						emailId.setBounds(120,30,200,30);
+						pass.setBounds(120,80,200,30);
+						signup.setBounds(20,150,80,30);
+						signin.setBounds(120,150,80,30);
+						clear.setBounds(220,150,100,30);
+						logIn.add(email);
+						logIn.add(password);
+						logIn.add(emailId);
+						logIn.add(pass);
+						logIn.add(signup);
+						logIn.add(signin);
+						logIn.add(clear);
+						logIn.setVisible(true);
+						clear.addActionListener(new ActionListener(){
+							public void actionPerformed(ActionEvent e3)
+							{
+								emailId.setText("");
+								pass.setText("");
+							}
+						});
+						
+					}
+				});
+				guest.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e2)
+					{
+						JFrame glogIn = new JFrame();
+						glogIn.setTitle("Guest Log In ");
+						glogIn.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						glogIn.setSize(400,300);
+						glogIn.setLayout(null);
+						JLabel email = new JLabel("E-mail Id:");
+						JTextField  emailId = new JTextField();
+						JButton signin = new JButton("Sign In");
+						JButton clear = new JButton("Clear Fields");
+						email.setBounds(20,30,80,30);
+						emailId.setBounds(120,30,200,30);
+						signin.setBounds(120,150,80,30);
+						clear.setBounds(220,150,100,30);
+						glogIn.add(email);
+						glogIn.add(emailId);
+						glogIn.add(signin);
+						glogIn.add(clear);
+						glogIn.setVisible(true);
+						clear.addActionListener(new ActionListener(){
+							public void actionPerformed(ActionEvent e3)
+							{
+								emailId.setText("");
+							}
+						});
+					}
+				});
+				
+			}
+		});
+		
+	}  
+	
+}
