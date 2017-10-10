@@ -192,45 +192,73 @@ class SmartMobile extends FeaturedMobile
 class Cart
 {
 	
-	private String productName;
-	private float price,subTotal;
-	private int quantity;
-	private static float total=0;
+	private float total=0;
+	private List<Float> subTotalSmart = new LinkedList<Float>();;
+	private List<Integer> quantitySmart = new LinkedList<Integer>();;
+	private List<Float> subTotalFeature = new LinkedList<Float>();;
+	private List<Integer> quantityFeature = new LinkedList<Integer>();;
+	private List<SmartMobile> smobile= new ArrayList<SmartMobile>();
+	private List<FeaturedMobile> fmobile= new ArrayList<FeaturedMobile>();
 	
-	Cart()
-	{
-		productName = " ";
-		price = 0;
-		quantity =0;
-	}
 	public void addToCart(SmartMobile id,int qty)
 	{
-		productName = id.getBrand()+id.getModel();
-		price = (float) id.getPrice();
-		quantity = qty;
-		subTotal = quantity * price;
-		total +=subTotal;
+		
+		smobile.add(id);
+		quantitySmart.add(qty);
+		subTotalSmart.add((float)id.price*qty);
+		total+=(float)id.price*qty;
+		
 	}
 	public void addToCart(FeaturedMobile id,int qty)
 	{
-		productName = id.getBrand()+id.getModel();
-		price = (float) id.getPrice();
-		quantity = qty;
-		subTotal = quantity * price;
-		total +=subTotal;
+		fmobile.add(id);
+		quantityFeature.add(qty);
+		subTotalFeature.add((float)id.price*qty);
+		total+=(float)id.price*qty;
+		
 	}
 	public float getTotal()
 	{
 		return total;
 	}
-	public void removeFromCart()
+	public void removeFromCart(int id)
 	{
-		total -= subTotal;
+		
+		if(id<=smobile.size())
+		{
+			total-=subTotalSmart.get(id-1);
+			subTotalSmart.remove(id-1);
+			quantitySmart.remove(id-1);
+			smobile.remove(id-1);
+		}
+		else
+		{
+			total-=subTotalFeature.get(id-smobile.size());
+			subTotalFeature.remove(id-smobile.size());
+			quantityFeature.remove(id-smobile.size());
+			fmobile.remove(id-smobile.size());
+		}
 	}
-	public void displayCartItem()
+	public boolean isEmpty()
 	{
-		int i=0;
-		System.out.println((i+1)+"        " +productName+"          "+price+"  *  "+quantity+"  =  "+subTotal);
+		if (total==0)
+			return true;
+		else
+			return false;
+		
+	}
+	public void displayCart()
+	{
+		int i=0,j=0;
+		for(SmartMobile s:smobile)
+		{
+			System.out.println((i+1)+"        " +s.brand+"          "+s.model+"  *  "+quantitySmart.get(i)+"  =  "+subTotalSmart.get(i));
+		}
+		for(FeaturedMobile f:fmobile)
+		{
+			
+			System.out.println((i+1)+"        " +f.brand+"          "+f.model+"  *  "+quantityFeature.get(j)+"  =  "+subTotalFeature.get(j));
+		}
 	}
 }
 class Address
@@ -262,7 +290,7 @@ interface User
 	public void addCartItem(SmartMobile m,int q);
 	public void addCartItem(FeaturedMobile m,int q);
 	public void removeCartItem(int id);
-	public void displayCart();
+	public void displayCartItem();
 	
 }
 class Member implements User
@@ -271,7 +299,7 @@ class Member implements User
 	protected int ph_no;
 	protected String name,password2,email,password;
 	private Address address = new Address();
-	List<Cart> cart = new ArrayList<Cart>();
+	Cart cart = new Cart();
 	
 	public void signUp()
 	{
@@ -318,32 +346,28 @@ class Member implements User
 	}
 	public void addCartItem(SmartMobile m,int q)
 	{
-		Cart c = new Cart();
-		c.addToCart(m,q);
-		cart.add(c);
-		displayCart();
-		
+		cart.addToCart(m,q);
+		displayCartItem();	
 	}
 	public void addCartItem(FeaturedMobile m,int q)
 	{
-		Cart c = new Cart();
-		c.addToCart(m,q);
-		cart.add(c);
-		displayCart();
+		cart.addToCart(m,q);
+		displayCartItem();
 	}
 	public void removeCartItem(int id)
 	{
-		cart.get(id-1).removeFromCart();
-		cart.remove(id-1);
-	}	
-	public void displayCart()
+		cart.removeFromCart(id);
+		displayCartItem();
+	}
+	public boolean isCartEmpty()
+	{
+		return cart.isEmpty();
+	}
+	public void displayCartItem()
 	{	
-		System.out.println("s_no     Product          price     quantity     Total" );
-		for(Cart c:cart)
-		{
-			c.displayCartItem();
-		}
-		System.out.println("total                                           "+cart.get(0).getTotal());	
+		System.out.println("s_no     Brand           model         price     quantity     Total" );
+		cart.displayCart();
+		System.out.println("total                                           "+cart.getTotal());	
 	}
 	public void displayMemberDetails()
 	{
@@ -357,7 +381,7 @@ class Guest implements User
 	private int ph_no;
 	private String name,email;
 	private Address address = new Address();
-	List<Cart> cart = new ArrayList<Cart>();
+	Cart cart = new Cart();
 	public boolean logIn(List<Member> member)
 	{
 		Scanner in = new Scanner(System.in);
@@ -372,43 +396,41 @@ class Guest implements User
 	}
 	public void addCartItem(SmartMobile m,int q)
 	{
-		Cart c = new Cart();
-		c.addToCart(m,q);
-		cart.add(c);
-		displayCart();
+		cart.addToCart(m,q);
+		displayCartItem();	
 	}
-	
 	public void addCartItem(FeaturedMobile m,int q)
 	{
-		Cart c = new Cart();
-		c.addToCart(m,q);
-		cart.add(c);
-		displayCart();
+		cart.addToCart(m,q);
+		displayCartItem();
 	}
 	public void removeCartItem(int id)
 	{
-		cart.get(id-1).removeFromCart();
-		cart.remove(id-1);
-	}	
-	public void displayCart()
+		cart.removeFromCart(id);
+	}
+	public boolean isCartEmpty()
 	{
-		System.out.println("s_no     Product          price     quantity     Total" );
-		for(Cart c:cart)
-		{
-			c.displayCartItem();
-		}
-		System.out.println("total                                           "+cart.get(0).getTotal());
+		return cart.isEmpty();
+	}
+	public void displayCartItem()
+	{	
+		System.out.println("s_no     Brand           model         price     quantity     Total" );
+		cart.displayCart();
+		System.out.println("total                                           "+cart.getTotal());	
+	}
+	public void displayMemberDetails()
+	{
+		System.out.println("name:"+name+"        e-mail:"+email);
+		System.out.printf("address:");address.getAddress();
 	}
 }
-class eshop
+class eshop 
 {
 	public static void main(String[] args) throws IOException
 	{
 		int i,j,fn=0,sn=0;
 		List<SmartMobile> smobile = new ArrayList<SmartMobile>();
 		List<FeaturedMobile> fmobile = new ArrayList<FeaturedMobile>();
-		//SmartMobile[] smobile = null ;
-		//FeaturedMobile[] fmobile  = null ;
 		List<Member> member = new ArrayList<Member>();
 		List<Guest> guest = new ArrayList<Guest>();
 		Scanner in = new Scanner (System.in);
@@ -510,43 +532,66 @@ class eshop
 							case 1: Member m = new Member();
 									if(m.logIn(member))
 									{
-										System.out.println("ID     Brand     Model    Price      Quantity");
-										System.out.println("Featured mobiles :");
-										
-										for(FeaturedMobile f:fmobile)
-										{
-											f.printDetails();
-										}
-										System.out.println("Smart mobiles  :");
-										for(SmartMobile s:smobile)
-										{
-											s.printDetails();
-										}
-										System.out.println("enter the ID to see details:");
-										i = in.nextInt();
-										if (i<smobile.size()){
-											smobile.get(i).displayMobile();
-										}
-										else
-										{
-											fmobile.get(i-smobile.size()).displayMobile();
-										}
-										/*System.out.println("\nEnter  \n 1->Browse another mobile \n 2-> add a mobile to cart\n choice :")
-										ch= in.nextInt();
-										switch(ch)
-										{1
-										}	*/
-										System.out.println("enter the ID to add to cart:");
-										i = in.nextInt();
-										System.out.println("enter the quantity:");
-										int q = in.nextInt();
-										if (i<smobile.size()){
-											m.addCartItem(smobile.get(i), q);
-										}
-										else
-										{
-											m.addCartItem(fmobile.get(i-sn),q);
-										}
+										do{
+											System.out.println("ID     Brand     Model    Price      Quantity");
+											System.out.println("Featured mobiles :");
+											
+											for(FeaturedMobile f:fmobile)
+											{
+												f.printDetails();
+											}
+											System.out.println("Smart mobiles  :");
+											for(SmartMobile s:smobile)
+											{
+												s.printDetails();
+											}
+											System.out.println("enter the ID to see details:");
+											i = in.nextInt();
+											if (i<smobile.size()){
+												smobile.get(i).displayMobile();
+											}
+											else
+											{
+												fmobile.get(i-smobile.size()).displayMobile();
+											}
+											System.out.println("\nEnter  \n 1->Browse another mobile \n 2-> add the mobile to cart:");
+											if(!m.isCartEmpty())
+											{
+												System.out.println("3->Remove a Mobile From Cart \n 4->Display The Cart \n 5->BUY NOW");
+											}
+											System.out.println("\n choice :");
+											ch= in.nextInt();
+											switch(ch)
+											{
+												case 1:continue;
+												
+												case 2:
+												//System.out.println("enter the ID to add to cart:");
+												//i = in.nextInt();
+														System.out.println("enter the quantity:");
+														int q = in.nextInt();
+														if (i<smobile.size()){
+															m.addCartItem(smobile.get(i), q);
+														}
+														else
+														{
+															m.addCartItem(fmobile.get(i-sn),q);
+														}
+														break;
+												case 3:	m.displayCartItem();
+														System.out.println("enter the ID to REMOVE from cart:");
+														i = in.nextInt();
+														m.removeCartItem(i);
+														break;
+												case 4:m.displayCartItem();
+														break;
+												case 5://m.bill();
+														//i=nextInt();
+														System.exit(0);
+														
+														
+											}
+										}while(true);
 									}
 									break;
 							case 2: Guest g = new Guest();
@@ -555,42 +600,67 @@ class eshop
 									System.out.println("ID     Brand     Model    Price      Quantity");
 									System.out.println("Featured mobiles :");
 									
-									for(FeaturedMobile f:fmobile)
-									{
-										f.printDetails();
-									}
-									System.out.println("Smart mobiles  :");
-									for(SmartMobile s:smobile)
-									{
-										s.printDetails();
-									}
-									System.out.println("enter the ID to see details:");
-									i = in.nextInt();
-									if (i<sn){
-										smobile.get(i).displayMobile();
-									}
-									else
-									{
-										fmobile.get(i-smobile.size()).displayMobile();
-									}
-									/*System.out.println("\nEnter  \n 1->Browse another mobile \n 2-> add a mobile to cart\n choice :")
-									ch= in.nextInt();
-									switch(ch)
-									{
-									}	*/
-									System.out.println("enter the ID to add to cart:");
-									i = in.nextInt();
-									System.out.println("enter the quantity:");
-									int q = in.nextInt();
-									
-									if (i<smobile.size()){
-										g.addCartItem(smobile.get(i), q);
-									}
-									else
-									{
-										g.addCartItem(fmobile.get(i-smobile.size()),q);
-									}
-									break;
+									do{
+											System.out.println("ID     Brand     Model    Price      Quantity");
+											System.out.println("Featured mobiles :");
+											
+											for(FeaturedMobile f:fmobile)
+											{
+												f.printDetails();
+											}
+											System.out.println("Smart mobiles  :");
+											for(SmartMobile s:smobile)
+											{
+												s.printDetails();
+											}
+											System.out.println("enter the ID to see details:");
+											i = in.nextInt();
+											if (i<smobile.size()){
+												smobile.get(i).displayMobile();
+											}
+											else
+											{
+												fmobile.get(i-smobile.size()).displayMobile();
+											}
+											System.out.println("\nEnter  \n 1->Browse another mobile \n 2-> add the mobile to cart:");
+											if(!g.isCartEmpty())
+											{
+												System.out.println("3->Remove a Mobile From Cart \n 4->Display The Cart \n 5->BUY NOW");
+											}
+											System.out.println("\n choice :");
+											ch= in.nextInt();
+											switch(ch)
+											{
+												case 1:continue;
+												
+												case 2:
+												//System.out.println("enter the ID to add to cart:");
+												//i = in.nextInt();
+														System.out.println("enter the quantity:");
+														int q = in.nextInt();
+														if (i<smobile.size()){
+															g.addCartItem(smobile.get(i), q);
+														}
+														else
+														{
+															g.addCartItem(fmobile.get(i-sn),q);
+														}
+														break;
+												case 3:	g.displayCartItem();
+														System.out.println("enter the ID to REMOVE from cart:");
+														i = in.nextInt();
+														g.removeCartItem(i);
+														break;
+												case 4:g.displayCartItem();
+														break;
+												case 5://g.bill();
+														//i=nextInt();
+														System.exit(0);
+														
+														
+											}
+										}while(true);
+
 							case 3: Member n = new Member();
 									n.signUp();
 									member.add(n);
